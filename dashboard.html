@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>User Dashboard | Harsha Metal Frame Works</title>
+  <link rel="stylesheet" href="css/main.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/pages.css">
+  
+  <!-- Scripts -->
+  <script defer src="js/db-api.js"></script>
+  <script defer src="js/main.js"></script>
+  <script defer src="js/dashboard.js"></script>
+  <style>
+    /* ══════════════════════════════════════════════
+       ULTRA PREMIUM CYBERPUNK DASHBOARD THEME
+    ══════════════════════════════════════════════ */
+    body {
+      background: #020208;
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    /* ── Scanline Overlay ── */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: repeating-linear-gradient(
+        0deg,
+        transparent,
+        transparent 2px,
+        rgba(0, 0, 0, 0.12) 2px,
+        rgba(0, 0, 0, 0.12) 4px
+      );
+      pointer-events: none;
+      z-index: 9998;
+      animation: scanline-shift 8s linear infinite;
+    }
+
+    @keyframes scanline-shift {
+      0% { background-position: 0 0; }
+      100% { background-position: 0 100px; }
+    }
+
+    /* ── Neon Corner Brackets (full-viewport) ── */
+    body::after {
+      content: '';
+      position: fixed;
+      inset: 12px;
+      border: 1px solid rgba(197, 160, 89, 0.06);
+      border-radius: 4px;
+      pointer-events: none;
+      z-index: 9997;
+      box-shadow:
+        inset 0 0 60px rgba(197, 160, 89, 0.04),
+        0 0 60px rgba(197, 160, 89, 0.04);
+    }
+    
+    /* ── 3D Glowing Orbs (more vivid) ── */
+    .orb {
+      position: fixed;
+      border-radius: 50%;
+      filter: blur(90px);
+      z-index: -1;
+      animation: float-3d 12s infinite alternate cubic-bezier(0.4, 0, 0.2, 1);
+      mix-blend-mode: screen;
+      pointer-events: none;
+    }
+    
+    .orb-1 {
+      width: 700px;
+      height: 700px;
+      background: radial-gradient(circle, rgba(255, 42, 133, 0.7) 0%, transparent 70%);
+      top: -250px;
+      left: -150px;
+      animation-delay: 0s;
+    }
+    
+    .orb-2 {
+      width: 800px;
+      height: 800px;
+      background: radial-gradient(circle, rgba(67, 56, 202, 0.65) 0%, transparent 70%);
+      bottom: -300px;
+      right: -250px;
+      animation-duration: 15s;
+      animation-delay: -5s;
+    }
+    
+    .orb-3 {
+      width: 600px;
+      height: 600px;
+      background: radial-gradient(circle, rgba(6, 182, 212, 0.6) 0%, transparent 70%);
+      top: 30%;
+      left: 35%;
+      animation-duration: 10s;
+      animation-delay: -2s;
+    }
+
+    .orb-4 {
+      width: 500px;
+      height: 500px;
+      background: radial-gradient(circle, rgba(245, 158, 11, 0.45) 0%, transparent 70%);
+      top: 60%;
+      left: 10%;
+      animation-duration: 18s;
+      animation-delay: -7s;
+    }
+
+    @keyframes float-3d {
+      0%   { transform: translate(0, 0) scale(1) rotate(0deg); }
+      25%  { transform: translate(120px, -80px) scale(1.15) rotate(25deg); }
+      50%  { transform: translate(-60px, 120px) scale(0.9) rotate(-20deg); }
+      75%  { transform: translate(80px, 60px) scale(1.1) rotate(40deg); }
+      100% { transform: translate(-40px, -60px) scale(1.05) rotate(10deg); }
+    }
+    
+    /* ── 3D Perspective Grid ── */
+    .perspective-grid {
+      position: fixed;
+      inset: -50%;
+      background-image: 
+        linear-gradient(rgba(197, 160, 89, 0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(197, 160, 89, 0.04) 1px, transparent 1px);
+      background-size: 50px 50px;
+      transform: perspective(1000px) rotateX(60deg) translateY(100px) translateZ(-200px);
+      animation: grid-move 15s linear infinite;
+      z-index: -2;
+      pointer-events: none;
+    }
+    
+    @keyframes grid-move {
+      0%   { transform: perspective(1000px) rotateX(60deg) translateY(0) translateZ(-200px); }
+      100% { transform: perspective(1000px) rotateX(60deg) translateY(50px) translateZ(-200px); }
+    }
+
+    /* ── 3D Frame Popup Entrance ── */
+    @keyframes popup-3d {
+      0%   { transform: scale(0.3) rotateX(80deg) rotateY(-40deg) translateY(200px); opacity: 0; }
+      60%  { transform: scale(1.06) rotateX(-5deg) rotateY(5deg) translateY(-25px); opacity: 1; box-shadow: 0 40px 80px rgba(197, 160, 89, 0.5); }
+      100% { transform: scale(1) rotateX(0deg) rotateY(0deg) translateY(0); opacity: 1; }
+    }
+    .popup-3d {
+      animation: popup-3d 1.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) both;
+    }
+
+    /* ── Product Card Ultra Holographic Sheen ── */
+    .product-card {
+      position: relative;
+      transform-style: preserve-3d;
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
+      will-change: transform;
+      overflow: hidden;
+    }
+    .product-card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(
+        circle at var(--mouse-x, 50%) var(--mouse-y, 50%),
+        rgba(197, 160, 89, 0.18) 0%,
+        rgba(6, 182, 212, 0.08) 30%,
+        transparent 65%
+      );
+      z-index: 2;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+      opacity: 0;
+      mix-blend-mode: screen;
+      border-radius: inherit;
+    }
+    .product-card:hover::before { opacity: 1; }
+
+    .product-card::after {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: linear-gradient(
+        105deg,
+        transparent 30%,
+        rgba(255, 255, 255, 0.04) 45%,
+        rgba(197, 160, 89, 0.08) 50%,
+        rgba(255, 255, 255, 0.04) 55%,
+        transparent 70%
+      );
+      transform: translateX(-100%) translateY(-100%);
+      z-index: 3;
+      pointer-events: none;
+      border-radius: inherit;
+      transition: none;
+    }
+    .product-card:hover::after {
+      transition: transform 0.6s ease;
+      transform: translateX(100%) translateY(100%);
+    }
+
+    /* ── Cyberpunk HUD Overlay inside visualizer ── */
+    .hud-overlay {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      z-index: 10;
+    }
+
+    /* HUD Corner Brackets */
+    .hud-corner {
+      position: absolute;
+      width: 22px;
+      height: 22px;
+      border-color: rgba(6, 182, 212, 0.85);
+      border-style: solid;
+      border-width: 0;
+    }
+    .hud-corner.tl { top: 8px; left: 8px; border-top-width: 2px; border-left-width: 2px; }
+    .hud-corner.tr { top: 8px; right: 8px; border-top-width: 2px; border-right-width: 2px; }
+    .hud-corner.bl { bottom: 8px; left: 8px; border-bottom-width: 2px; border-left-width: 2px; }
+    .hud-corner.br { bottom: 8px; right: 8px; border-bottom-width: 2px; border-right-width: 2px; }
+
+    /* HUD scan beam */
+    .hud-scanbeam {
+      position: absolute;
+      left: 0; right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(6, 182, 212, 0.6), transparent);
+      top: 0;
+      animation: hud-scan 4s ease-in-out infinite;
+      box-shadow: 0 0 8px rgba(6, 182, 212, 0.5);
+    }
+    @keyframes hud-scan {
+      0%   { top: 0; opacity: 0; }
+      5%   { opacity: 1; }
+      95%  { opacity: 1; }
+      100% { top: 100%; opacity: 0; }
+    }
+
+    /* HUD Telemetry Readouts */
+    .hud-telemetry {
+      position: absolute;
+      font-family: 'Courier New', monospace;
+      font-size: 0.6rem;
+      color: rgba(6, 182, 212, 0.85);
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      text-shadow: 0 0 8px rgba(6, 182, 212, 0.8);
+      line-height: 1.8;
+    }
+    .hud-telemetry.top-left  { top: 14px; left: 36px; }
+    .hud-telemetry.top-right { top: 14px; right: 36px; text-align: right; }
+    .hud-telemetry.bot-left  { bottom: 32px; left: 36px; }
+    .hud-telemetry.bot-right { bottom: 32px; right: 36px; text-align: right; }
+
+    .hud-value {
+      color: rgba(197, 160, 89, 1);
+      font-weight: bold;
+      text-shadow: 0 0 10px rgba(197, 160, 89, 0.9);
+    }
+
+    /* HUD target reticle */
+    .hud-reticle {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 32px;
+      height: 32px;
+      border: 1px solid rgba(6, 182, 212, 0.35);
+      border-radius: 50%;
+      animation: reticle-pulse 3s ease-in-out infinite;
+    }
+    .hud-reticle::before {
+      content: '';
+      position: absolute;
+      inset: 4px;
+      border: 1px solid rgba(197, 160, 89, 0.3);
+      border-radius: 50%;
+    }
+    @keyframes reticle-pulse {
+      0%, 100% { transform: translate(-50%, -50%) scale(1); opacity: 0.5; }
+      50% { transform: translate(-50%, -50%) scale(1.15); opacity: 1; }
+    }
+
+    /* HUD data blip animation */
+    @keyframes blink-data {
+      0%, 90%, 100% { opacity: 1; }
+      95% { opacity: 0.2; }
+    }
+    .hud-blink { animation: blink-data 3s ease infinite; }
+
+    /* ── Neon stat bars in welcome popup ── */
+    @keyframes welcome-glow-pulse {
+      0%, 100% { box-shadow: 0 0 20px rgba(197, 160, 89, 0.3), 0 0 60px rgba(197, 160, 89, 0.1); }
+      50% { box-shadow: 0 0 40px rgba(197, 160, 89, 0.6), 0 0 80px rgba(197, 160, 89, 0.25); }
+    }
+  </style>
+</head>
+<body class="metal-bg">
+
+  <!-- 3D Colorful Wallpaper -->
+  <div class="perspective-grid"></div>
+  <div class="orb orb-1"></div>
+  <div class="orb orb-2"></div>
+  <div class="orb orb-3"></div>
+  <div class="orb orb-4"></div>
+
+  <!-- Dashboard Main Banner Section -->
+  <section class="section" style="padding-top: 100px; padding-bottom: 40px;">
+    <div class="container">
+      <div class="flex-between" style="flex-wrap: wrap; gap: 16px; margin-bottom: 24px;">
+        <div>
+          <span class="section-label">Design Atelier</span>
+          <h1 style="font-size: 2.2rem; margin-top: 4px;">Explore Custom Metal Designs</h1>
+        </div>
+        <div class="flex-center gap-md">
+          <a href="account.html" class="btn btn-ghost">📦 My Orders</a>
+          <button onclick="logoutSession()" class="btn btn-outline" style="border-color: var(--danger); color: var(--danger);">Logout</button>
+        </div>
+      </div>
+      <p style="color: var(--text-secondary); max-width: 600px;">
+        Browse our handcrafted designs below. Select any style to open the **Realistic 3D Customizer**, upload your photo, test specular finishes, and order via WhatsApp.
+      </p>
+    </div>
+  </section>
+
+  <!-- Gallery Catalog Cards List -->
+  <section class="section" style="padding-top: 0; padding-bottom: 60px;">
+    <div class="container">
+      <div class="grid-3" id="dashboard-gallery-grid">
+        <!-- Rendered dynamically -->
+      </div>
+    </div>
+  </section>
+
+  <!-- 3D CUSTOMIZER OVERLAY MODAL -->
+  <div class="modal-overlay" id="customizer-modal" style="padding: 10px;">
+    <div class="modal" style="max-width: 1050px; width: 100%; border-radius: var(--radius-xl); padding: 24px;">
+      
+      <div class="flex-between" style="margin-bottom: 20px; padding-bottom: 12px; border-bottom: 1px solid var(--border);">
+        <div>
+          <span style="font-size:0.75rem; color:var(--text-muted); font-weight:700; text-transform:uppercase;" id="customizer-molding-type">Aluminum Frame</span>
+          <h2 id="customizer-frame-name" style="font-family: var(--font-heading); font-size: 1.4rem;">Design Customizer</h2>
+        </div>
+        <button id="customizer-close-btn" class="btn btn-ghost btn-icon" style="border-radius:50%; width:36px; height:36px;">×</button>
+      </div>
+
+      <!-- Main Layout grid -->
+      <div class="order-layout" style="grid-template-columns: 1.2fr 1fr; gap: 24px;">
+        
+        <!-- Left: Interactive 3D Frame Viewer -->
+        <div class="flex-col gap-md">
+          <div class="visualizer-wrapper">
+            <div class="visualizer-bg-grid"></div>
+            
+            <!-- Fully 3D Realistic Box Rendering -->
+            <div class="frame-3d-box" id="preview-frame-3d">
+              <div class="frame-glow-backlight" id="preview-backlight"></div>
+              <div class="frame-molding finish-gold" id="preview-molding"></div>
+              <div class="frame-inner-shadow"></div>
+              <div class="frame-canvas" id="preview-canvas">
+                <!-- Fallback template placeholder icon -->
+                <div style="width: 100%; height:100%; display:flex; flex-direction:column; align-items:center; justify-content:center; padding: 20px; text-align:center; color: var(--text-muted);">
+                  <span style="font-size: 2.5rem; margin-bottom: 8px;">📷</span>
+                  <p style="font-size: 0.8rem;">Upload your portrait to preview inside the frame</p>
+                </div>
+              </div>
+              <div class="frame-glass-overlay" id="preview-glass"></div>
+              <div class="frame-metal-specular" id="preview-specular"></div>
+            </div>
+
+            <!-- ═══ CYBERPUNK HUD OVERLAY ═══ -->
+            <div class="hud-overlay">
+              <!-- Corner brackets -->
+              <div class="hud-corner tl"></div>
+              <div class="hud-corner tr"></div>
+              <div class="hud-corner bl"></div>
+              <div class="hud-corner br"></div>
+
+              <!-- Scan beam -->
+              <div class="hud-scanbeam"></div>
+
+              <!-- Target reticle -->
+              <div class="hud-reticle"></div>
+
+              <!-- Top-left: rotation axes -->
+              <div class="hud-telemetry top-left">
+                <div>ROT-X <span class="hud-value" id="hud-coord-x">0</span>°</div>
+                <div>ROT-Y <span class="hud-value" id="hud-coord-y">0</span>°</div>
+              </div>
+
+              <!-- Top-right: material telemetry -->
+              <div class="hud-telemetry top-right hud-blink">
+                <div>SYS <span class="hud-value">ONLINE</span></div>
+                <div>CAM <span class="hud-value">3D-LIVE</span></div>
+              </div>
+
+              <!-- Bottom-left: physical specs -->
+              <div class="hud-telemetry bot-left">
+                <div>MASS <span class="hud-value" id="hud-weight">—</span></div>
+                <div>DENS <span class="hud-value" id="hud-density">—</span></div>
+              </div>
+
+              <!-- Bottom-right: render mode -->
+              <div class="hud-telemetry bot-right">
+                <div>MODE <span class="hud-value">SPECULAR</span></div>
+                <div>RENDER <span class="hud-value">4K</span></div>
+              </div>
+            </div>
+            <!-- ═══════════════════════════════ -->
+
+            <div style="position: absolute; bottom: 12px; left: 50%; transform: translateX(-50%); font-size: 0.72rem; color: rgba(6,182,212,0.7); pointer-events: none; background: rgba(0,0,0,0.7); padding: 4px 12px; border-radius: 20px; border: 1px solid rgba(6,182,212,0.2); letter-spacing: 1px; font-family: 'Courier New', monospace;">
+              🖱️ DRAG TO ROTATE 3D FRAME
+            </div>
+          </div>
+
+          <!-- Upload local photo input -->
+          <div class="form-group" style="margin-bottom: 0;">
+            <label class="form-label">Upload Your Photo <span>*</span></label>
+            <div class="file-drop" id="customizer-file-drop" style="padding: 24px 20px;">
+              <span style="font-size: 1.5rem;">📤</span>
+              <div style="font-size: 0.85rem; font-weight: 600; margin-top: 4px;">Click here to select a local picture</div>
+              <input type="file" id="customizer-file-input" accept="image/*">
+            </div>
+          </div>
+        </div>
+
+        <!-- Right: Specs Configuration details -->
+        <div class="flex-col gap-md">
+          <h3 style="font-family:var(--font-heading); font-size: 1.1rem; border-bottom:1px solid var(--border); padding-bottom:8px;">Configure Finishes</h3>
+
+          <!-- Finish options buttons -->
+          <div class="form-group">
+            <label class="form-label">Choose Specular Coating Finish</label>
+            <div class="flex gap-sm" style="margin-top: 6px;">
+              <button class="finish-selector-btn active" data-finish="glassy">🔮 Glassy Finish</button>
+              <button class="finish-selector-btn" data-finish="glow">🌟 Ultra Glow</button>
+              <button class="finish-selector-btn" data-finish="metal">✨ Fully Metal Glow</button>
+            </div>
+          </div>
+
+          <!-- Dimension parameters -->
+          <div class="form-row">
+            <div class="form-group">
+              <label for="input-width" class="form-label">Width (Inches)</label>
+              <input type="number" id="input-width" class="form-input" min="4" max="100" value="12">
+            </div>
+            <div class="form-group">
+              <label for="input-height" class="form-label">Height (Inches)</label>
+              <input type="number" id="input-height" class="form-input" min="4" max="100" value="16">
+            </div>
+          </div>
+
+          <!-- Finish details card -->
+          <div class="card" style="padding: 16px; background: rgba(255,255,255,0.02);">
+            <h4 style="font-family: var(--font-heading); font-size: 0.9rem; margin-bottom: 6px; color: var(--gold);" id="finish-title-desc">Glassy Finish Frame</h4>
+            <p style="font-size: 0.78rem; line-height: 1.4; color: var(--text-secondary);" id="finish-text-desc">
+              Adds a premium protective high-gloss sheet. Reflects ambient light, preserving portrait depth and creating elegant glass beams.
+            </p>
+          </div>
+
+          <div style="margin-top: 12px; padding-top: 16px; border-top: 1px solid var(--border);">
+            <div class="flex-between" style="margin-bottom: 16px;">
+              <span style="font-size: 0.9rem; color: var(--text-secondary);">Estimated Cost:</span>
+              <span id="customizer-total-price" style="font-family: var(--font-heading); font-size: 1.4rem; font-weight: 800; color: var(--gold);">₹1,390.00</span>
+            </div>
+            
+            <button id="whatsapp-order-btn" class="btn btn-primary btn-full btn-lg" style="background:#25d366; color:white; border:none; box-shadow:0 4px 15px rgba(37,211,102,0.4);">
+              <span style="font-size: 1.2rem; margin-right: 4px;">💬</span> Place Order via WhatsApp
+            </button>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Ultra-Premium Personalized Welcome Popup Modal -->
+  <div class="modal-overlay" id="welcome-popup" style="display: none; justify-content: center; align-items: center; z-index: 2000; background: rgba(2,2,8,0.92); backdrop-filter: blur(24px); transition: opacity 0.5s ease;">
+    <div class="card popup-3d" style="max-width: 520px; width: 100%; padding: 48px 36px; border: 1.5px solid rgba(197,160,89,0.6); border-radius: var(--radius-xl); text-align: center; background: radial-gradient(ellipse at 30% 20%, #0d0a1e, #03030a); box-shadow: 0 0 80px rgba(197, 160, 89, 0.2), 0 0 160px rgba(67, 56, 202, 0.15), inset 0 0 40px rgba(197, 160, 89, 0.06); position: relative; overflow: hidden; animation: welcome-glow-pulse 3s ease infinite;">
+      
+      <!-- Particle grid bg -->
+      <div style="position:absolute;inset:0;background-image:linear-gradient(rgba(197,160,89,0.04) 1px,transparent 1px),linear-gradient(90deg,rgba(197,160,89,0.04) 1px,transparent 1px);background-size:24px 24px;pointer-events:none;"></div>
+
+      <!-- Neon glow orbs -->
+      <div style="position:absolute;width:200px;height:200px;background:radial-gradient(circle,rgba(197,160,89,0.2) 0%,transparent 70%);top:-80px;right:-60px;filter:blur(30px);pointer-events:none;"></div>
+      <div style="position:absolute;width:200px;height:200px;background:radial-gradient(circle,rgba(6,182,212,0.18) 0%,transparent 70%);bottom:-80px;left:-60px;filter:blur(30px);pointer-events:none;"></div>
+      <div style="position:absolute;width:150px;height:150px;background:radial-gradient(circle,rgba(255,42,133,0.12) 0%,transparent 70%);bottom:30%;right:-40px;filter:blur(25px);pointer-events:none;"></div>
+
+      <!-- HUD corner brackets -->
+      <div style="position:absolute;top:12px;left:12px;width:18px;height:18px;border-top:2px solid rgba(197,160,89,0.7);border-left:2px solid rgba(197,160,89,0.7);"></div>
+      <div style="position:absolute;top:12px;right:12px;width:18px;height:18px;border-top:2px solid rgba(197,160,89,0.7);border-right:2px solid rgba(197,160,89,0.7);"></div>
+      <div style="position:absolute;bottom:12px;left:12px;width:18px;height:18px;border-bottom:2px solid rgba(197,160,89,0.7);border-left:2px solid rgba(197,160,89,0.7);"></div>
+      <div style="position:absolute;bottom:12px;right:12px;width:18px;height:18px;border-bottom:2px solid rgba(197,160,89,0.7);border-right:2px solid rgba(197,160,89,0.7);"></div>
+
+      <!-- Status bar -->
+      <div style="position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,rgba(197,160,89,0.8),rgba(6,182,212,0.6),transparent);animation:scanline-shift 3s linear infinite;"></div>
+
+      <!-- Welcome Content -->
+      <div id="welcome-avatar-badge" style="font-size: 3rem; margin-bottom: 24px; display: inline-flex; align-items:center; justify-content:center; width: 96px; height: 96px; background: linear-gradient(135deg, rgba(197,160,89,0.15), rgba(6,182,212,0.1)); border-radius: 50%; border: 2px solid rgba(197,160,89,0.6); box-shadow: 0 0 30px rgba(197,160,89,0.4), 0 0 60px rgba(197,160,89,0.15), inset 0 0 20px rgba(197,160,89,0.08); animation: float1 4s ease-in-out infinite; position: relative; z-index: 1;">
+        👨‍💻
+      </div>
+
+      <!-- Auth verified badge -->
+      <div style="display:inline-flex;align-items:center;gap:6px;background:rgba(34,197,94,0.1);border:1px solid rgba(34,197,94,0.3);border-radius:50px;padding:4px 14px;margin-bottom:20px;font-size:0.72rem;font-family:'Courier New',monospace;letter-spacing:1.5px;color:rgba(34,197,94,0.9);text-shadow:0 0 8px rgba(34,197,94,0.6);">
+        <span style="width:6px;height:6px;border-radius:50%;background:rgba(34,197,94,0.9);box-shadow:0 0 8px rgba(34,197,94,0.8);animation:blink-data 2s ease infinite;display:inline-block;"></span>
+        GOOGLE AUTH VERIFIED
+      </div>
+      
+      <h2 style="font-family: var(--font-heading); font-size: 1.9rem; line-height: 1.2; margin-bottom: 10px; position: relative; z-index: 1;">
+        Welcome to the<br>
+        <span style="background: linear-gradient(135deg, #e6c887, #c5a059, #06b6d4); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-weight: 800; background-size: 200% auto; animation: shine 3s linear infinite;">3D Metal Frame Atelier</span>
+      </h2>
+      
+      <p style="font-size: 1.2rem; color: #fff; font-weight: 700; margin-bottom: 4px; text-shadow: 0 0 20px rgba(197,160,89,0.4);" id="welcome-user-name">Preetham Kumar</p>
+      <p style="font-size: 0.82rem; color: var(--text-secondary); margin-bottom: 28px; font-family: 'Courier New', monospace; letter-spacing: 1px;" id="welcome-user-email">preetham@google.com</p>
+
+      <!-- Stats row -->
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:28px;">
+        <div style="background:rgba(197,160,89,0.06);border:1px solid rgba(197,160,89,0.15);border-radius:8px;padding:10px;">
+          <div style="font-size:1.3rem;font-weight:800;color:var(--gold);font-family:var(--font-heading);">3D</div>
+          <div style="font-size:0.65rem;color:var(--text-muted);letter-spacing:1px;text-transform:uppercase;">Renderer</div>
+        </div>
+        <div style="background:rgba(6,182,212,0.06);border:1px solid rgba(6,182,212,0.15);border-radius:8px;padding:10px;">
+          <div style="font-size:1.3rem;font-weight:800;color:#06b6d4;font-family:var(--font-heading);">4K</div>
+          <div style="font-size:0.65rem;color:var(--text-muted);letter-spacing:1px;text-transform:uppercase;">Preview</div>
+        </div>
+        <div style="background:rgba(255,42,133,0.06);border:1px solid rgba(255,42,133,0.15);border-radius:8px;padding:10px;">
+          <div style="font-size:1.3rem;font-weight:800;color:#ff2a85;font-family:var(--font-heading);">∞</div>
+          <div style="font-size:0.65rem;color:var(--text-muted);letter-spacing:1px;text-transform:uppercase;">Designs</div>
+        </div>
+      </div>
+      
+      <p style="font-size: 0.85rem; color: var(--text-muted); line-height: 1.6; margin-bottom: 32px; max-width: 400px; margin-left: auto; margin-right: auto;">
+        Your account is authenticated. You now have full access to the premium 3D customizer with real-time pricing, specular finishes, and direct WhatsApp ordering.
+      </p>
+
+      <button id="welcome-close-btn" class="btn btn-primary btn-full btn-lg" style="box-shadow: 0 8px 30px rgba(197, 160, 89, 0.5), 0 0 60px rgba(197,160,89,0.1); border: none; font-size: 1rem; letter-spacing: 2px; text-transform: uppercase; font-family: var(--font-heading); position: relative; overflow: hidden;">
+        <span style="position:relative;z-index:1;">⚡ Enter Workspace</span>
+      </button>
+    </div>
+  </div>
+
+</body>
+</html>

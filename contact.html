@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Contact Us | Harsha Metal Frame Works</title>
+  <link rel="stylesheet" href="css/main.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/pages.css">
+  
+  <!-- App JS -->
+  <script defer src="js/db-api.js"></script>
+  <script defer src="js/main.js"></script>
+  <script defer src="js/contact.js"></script>
+</head>
+<body class="metal-bg grain-overlay">
+
+  <section class="contact-page">
+    <div class="container">
+      
+      <div class="section-header" style="margin-bottom: 60px; text-align: center;">
+        <span class="section-label">Connect With Us</span>
+        <h1 class="section-title">Get In <span>Touch</span></h1>
+        <p class="section-desc">Have a question regarding custom specifications, bulk prices, or delivery schedules? Send us a message.</p>
+      </div>
+
+      <div class="contact-layout">
+        
+        <!-- Address + direct info -->
+        <div class="animate-fadeInUp">
+          <h2 style="font-family: var(--font-heading); margin-bottom: 24px;">Our Workshop Details</h2>
+          <p style="margin-bottom: 32px; color: var(--text-secondary);">
+            Feel free to contact us via WhatsApp, call directly, or fill out the contact form. Our design consultants are available Monday to Saturday (9:00 AM to 7:00 PM).
+          </p>
+
+          <div class="contact-info-item">
+            <div class="contact-icon">📍</div>
+            <div>
+              <h4 style="font-family: var(--font-heading); font-size: 1.05rem;">Workshop Address</h4>
+              <p style="font-size: 0.9rem; color: var(--text-muted); margin-top: 4px;">
+                HARSHA METAL_FRAM_WORKS,<br>
+                Industrial Area Main Cross Road,<br>
+                Bangalore, Karnataka, India
+              </p>
+            </div>
+          </div>
+
+          <div class="contact-info-item">
+            <div class="contact-icon">📞</div>
+            <div>
+              <h4 style="font-family: var(--font-heading); font-size: 1.05rem;">Phone & WhatsApp</h4>
+              <p style="font-size: 0.9rem; color: var(--text-muted); margin-top: 4px;">
+                +91 7411464311
+              </p>
+            </div>
+          </div>
+
+          <div class="contact-info-item">
+            <div class="contact-icon">✉️</div>
+            <div>
+              <h4 style="font-family: var(--font-heading); font-size: 1.05rem;">Email Support</h4>
+              <p style="font-size: 0.9rem; color: var(--text-muted); margin-top: 4px;">
+                info@harshametalframe.com
+              </p>
+            </div>
+          </div>
+
+          <div style="margin-top: 40px;">
+            <a href="https://wa.me/917411464311?text=Hi%2C%20I'm%20inquiring%20about%20your%20metal%20frames." target="_blank" class="btn btn-outline" style="border-color: #25d366; color: #25d366; background: rgba(37,211,102,0.05);">
+              💬 Message on WhatsApp
+            </a>
+          </div>
+        </div>
+
+        <!-- Contact Query Form -->
+        <div class="contact-form-card animate-fadeInUp" style="animation-delay: 0.2s;">
+          <h3 style="font-family: var(--font-heading); font-size: 1.25rem; margin-bottom: 24px;">Send Message</h3>
+          
+          <form id="contact-form">
+            <div class="form-group">
+              <label for="contact-name" class="form-label">Full Name <span>*</span></label>
+              <input type="text" id="contact-name" class="form-input" placeholder="Your Name" required>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label for="contact-email" class="form-label">Email Address <span>*</span></label>
+                <input type="email" id="contact-email" class="form-input" placeholder="name@example.com" required>
+              </div>
+              <div class="form-group">
+                <label for="contact-phone" class="form-label">Mobile Number</label>
+                <input type="tel" id="contact-phone" class="form-input" placeholder="e.g. 9876543210">
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="contact-msg" class="form-label">Message / Inquiry Details <span>*</span></label>
+              <textarea id="contact-msg" class="form-textarea" placeholder="How can we help you? Write your requirements..." required></textarea>
+            </div>
+
+            <button type="submit" id="contact-submit-btn" class="btn btn-primary btn-full" style="margin-top: 12px;">Send message</button>
+          </form>
+        </div>
+
+      </div>
+
+    </div>
+  </section>
+
+</body>
+</html>

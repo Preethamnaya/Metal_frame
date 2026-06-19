@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login | Harsha Metal Frame Works</title>
+  <link rel="stylesheet" href="css/main.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/pages.css">
+  
+  <!-- Scripts -->
+  <script defer src="js/db-api.js"></script>
+  <script defer src="js/auth.js"></script>
+  <script defer src="js/main.js"></script>
+  
+  <style>
+    /* ══════════════════════════════════════════
+       ULTRA PREMIUM CYBERPUNK LOGIN
+    ══════════════════════════════════════════ */
+    .login-container {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+      padding: 24px;
+      background: #020208;
+    }
+
+    /* Full-page scanlines */
+    .login-container::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image: repeating-linear-gradient(
+        0deg,
+        transparent,
+        transparent 2px,
+        rgba(0, 0, 0, 0.12) 2px,
+        rgba(0, 0, 0, 0.12) 4px
+      );
+      pointer-events: none;
+      z-index: 3;
+      animation: scanline-scroll 10s linear infinite;
+    }
+    @keyframes scanline-scroll {
+      0% { background-position: 0 0; }
+      100% { background-position: 0 80px; }
+    }
+    
+    /* 3D Glowing Orbs */
+    .orb {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(90px);
+      z-index: 0;
+      animation: float-3d 12s infinite alternate cubic-bezier(0.4, 0, 0.2, 1);
+      mix-blend-mode: screen;
+    }
+    
+    .orb-1 {
+      width: 700px;
+      height: 700px;
+      background: radial-gradient(circle, rgba(255, 42, 133, 0.7) 0%, transparent 70%);
+      top: -250px;
+      left: -150px;
+      animation-delay: 0s;
+    }
+    
+    .orb-2 {
+      width: 800px;
+      height: 800px;
+      background: radial-gradient(circle, rgba(67, 56, 202, 0.65) 0%, transparent 70%);
+      bottom: -300px;
+      right: -250px;
+      animation-duration: 15s;
+      animation-delay: -5s;
+    }
+    
+    .orb-3 {
+      width: 600px;
+      height: 600px;
+      background: radial-gradient(circle, rgba(6, 182, 212, 0.6) 0%, transparent 70%);
+      top: 30%;
+      left: 35%;
+      animation-duration: 10s;
+      animation-delay: -2s;
+    }
+    
+    .orb-4 {
+      width: 500px;
+      height: 500px;
+      background: radial-gradient(circle, rgba(245, 158, 11, 0.45) 0%, transparent 70%);
+      bottom: 10%;
+      left: -100px;
+      animation-duration: 18s;
+    }
+
+    @keyframes float-3d {
+      0%   { transform: translate(0, 0) scale(1) rotate(0deg); }
+      25%  { transform: translate(120px, -80px) scale(1.15) rotate(25deg); }
+      50%  { transform: translate(-60px, 120px) scale(0.9) rotate(-20deg); }
+      75%  { transform: translate(80px, 60px) scale(1.1) rotate(40deg); }
+      100% { transform: translate(-40px, -60px) scale(1.05) rotate(10deg); }
+    }
+    
+    /* Grid Overlay for 3D Perspective */
+    .perspective-grid {
+      position: absolute;
+      inset: -50%;
+      background-image: 
+        linear-gradient(rgba(197, 160, 89, 0.05) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(197, 160, 89, 0.05) 1px, transparent 1px);
+      background-size: 50px 50px;
+      transform: perspective(1000px) rotateX(60deg) translateY(100px) translateZ(-200px);
+      animation: grid-move 15s linear infinite;
+      z-index: 1;
+      pointer-events: none;
+    }
+    
+    @keyframes grid-move {
+      0%   { transform: perspective(1000px) rotateX(60deg) translateY(0) translateZ(-200px); }
+      100% { transform: perspective(1000px) rotateX(60deg) translateY(50px) translateZ(-200px); }
+    }
+
+    /* Floating brand text above the card */
+    .login-brand-header {
+      position: absolute;
+      top: 40px;
+      left: 50%;
+      transform: translateX(-50%);
+      text-align: center;
+      z-index: 10;
+      pointer-events: none;
+      white-space: nowrap;
+    }
+    .login-brand-header .brand-line {
+      font-family: 'Courier New', monospace;
+      font-size: 0.65rem;
+      letter-spacing: 5px;
+      text-transform: uppercase;
+      color: rgba(197, 160, 89, 0.55);
+      text-shadow: 0 0 12px rgba(197, 160, 89, 0.4);
+    }
+
+    /* Neon border frame around entire viewport */
+    .viewport-border {
+      position: fixed;
+      inset: 10px;
+      border: 1px solid rgba(197, 160, 89, 0.08);
+      border-radius: 4px;
+      pointer-events: none;
+      z-index: 2;
+      box-shadow:
+        inset 0 0 80px rgba(197, 160, 89, 0.03),
+        0 0 80px rgba(197, 160, 89, 0.03);
+    }
+    /* Viewport corner brackets */
+    .viewport-corner {
+      position: fixed;
+      width: 20px;
+      height: 20px;
+      z-index: 3;
+      pointer-events: none;
+      border-color: rgba(197, 160, 89, 0.5);
+      border-style: solid;
+      border-width: 0;
+    }
+    .vc-tl { top: 10px; left: 10px; border-top-width: 2px; border-left-width: 2px; }
+    .vc-tr { top: 10px; right: 10px; border-top-width: 2px; border-right-width: 2px; }
+    .vc-bl { bottom: 10px; left: 10px; border-bottom-width: 2px; border-left-width: 2px; }
+    .vc-br { bottom: 10px; right: 10px; border-bottom-width: 2px; border-right-width: 2px; }
+
+    /* Auth card upgrade */
+    .auth-card {
+      border-color: rgba(197, 160, 89, 0.25) !important;
+      background: radial-gradient(ellipse at 30% 20%, #0d0a20, #03030b) !important;
+      box-shadow: 
+        0 0 80px rgba(197, 160, 89, 0.15),
+        0 0 160px rgba(67, 56, 202, 0.12),
+        inset 0 0 40px rgba(197, 160, 89, 0.04) !important;
+      animation: card-breathe 4s ease-in-out infinite;
+    }
+    @keyframes card-breathe {
+      0%, 100% { box-shadow: 0 0 60px rgba(197,160,89,0.12), 0 0 120px rgba(67,56,202,0.1), inset 0 0 30px rgba(197,160,89,0.03); }
+      50% { box-shadow: 0 0 100px rgba(197,160,89,0.22), 0 0 200px rgba(67,56,202,0.18), inset 0 0 50px rgba(197,160,89,0.06); }
+    }
+
+    /* Popup 3D entrance for Google modal */
+    @keyframes popup-3d {
+      0%   { transform: scale(0.5) rotateX(40deg) translateY(60px); opacity: 0; }
+      70%  { transform: scale(1.03) rotateX(-3deg) translateY(-8px); opacity: 1; }
+      100% { transform: scale(1) rotateX(0deg) translateY(0); opacity: 1; }
+    }
+  </style>
+</head>
+<body class="metal-bg">
+
+  <div class="login-container">
+    <!-- Viewport chrome -->
+    <div class="viewport-border"></div>
+    <div class="viewport-corner vc-tl"></div>
+    <div class="viewport-corner vc-tr"></div>
+    <div class="viewport-corner vc-bl"></div>
+    <div class="viewport-corner vc-br"></div>
+
+    <!-- Brand header -->
+    <div class="login-brand-header">
+      <div class="brand-line">⬡ HARSHA METAL FRAME WORKS — SECURE PORTAL ⬡</div>
+    </div>
+
+    <div class="perspective-grid"></div>
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+    <div class="orb orb-3"></div>
+    <div class="orb orb-4"></div>
+
+    <div class="auth-card animate-fadeInUp" style="z-index: 5; max-width: 480px; width: 100%; position: relative; overflow: hidden;">
+      
+      <!-- Auth card HUD corners -->
+      <div style="position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,rgba(197,160,89,0.8),rgba(6,182,212,0.5),transparent);"></div>
+      <div style="position:absolute;top:12px;left:12px;width:14px;height:14px;border-top:2px solid rgba(197,160,89,0.7);border-left:2px solid rgba(197,160,89,0.7);pointer-events:none;"></div>
+      <div style="position:absolute;top:12px;right:12px;width:14px;height:14px;border-top:2px solid rgba(197,160,89,0.7);border-right:2px solid rgba(197,160,89,0.7);pointer-events:none;"></div>
+      <div style="position:absolute;bottom:12px;left:12px;width:14px;height:14px;border-bottom:2px solid rgba(197,160,89,0.7);border-left:2px solid rgba(197,160,89,0.7);pointer-events:none;"></div>
+      <div style="position:absolute;bottom:12px;right:12px;width:14px;height:14px;border-bottom:2px solid rgba(197,160,89,0.7);border-right:2px solid rgba(197,160,89,0.7);pointer-events:none;"></div>
+      
+      <div class="auth-logo">
+        <div class="logo-icon" style="box-shadow: 0 0 40px rgba(197,160,89,0.5), 0 0 80px rgba(197,160,89,0.2); animation: card-breathe 3s ease infinite;">H</div>
+        <h1 style="font-size: 1.8rem; letter-spacing: 1.5px;">HARSHA METAL_FRAM_WORKS</h1>
+        <p style="font-size: 0.8rem; letter-spacing: 1px;">PREMIUM METALLIC CUSTOM PORTRAITS</p>
+      </div>
+
+      <!-- Tab Switcher -->
+      <div class="auth-tabs" id="auth-portal-tabs" style="margin-bottom: 24px;">
+        <button class="auth-tab active" onclick="switchLoginTab('user')">👤 User Portal</button>
+        <button class="auth-tab" onclick="switchLoginTab('admin')">🛠️ Administrator</button>
+      </div>
+
+      <div id="auth-error-box" class="form-error" style="display: none; padding: 12px; border-radius: var(--radius-sm); background: rgba(239,68,68,0.1); border: 1px solid var(--danger); text-align: center; margin-bottom: 20px;"></div>
+
+      <!-- Customer User Portal Card -->
+      <div id="user-login-panel" style="display: block;">
+        <p style="text-align: center; color: var(--text-secondary); margin-bottom: 32px; font-size: 0.95rem;">
+          Explore and design your customized metal frames in full 3D simulation. 
+        </p>
+        <button class="google-btn btn-lg" id="user-google-btn" style="width: 100%; font-size: 1.05rem; padding: 16px;">
+          <img src="https://img.icons8.com/color/48/000000/google-logo.png" alt="Google Logo">
+          <span>Sign In with Google</span>
+        </button>
+        <p style="text-align: center; color: var(--text-muted); font-size: 0.75rem; margin-top: 24px;">
+          Secure login provided via Google Accounts.
+        </p>
+      </div>
+
+      <!-- Admin Portal Form -->
+      <div id="admin-login-panel" style="display: none;">
+        <form id="admin-login-form">
+          <div class="form-group">
+            <label class="form-label" for="admin-email">Administrator Email</label>
+            <input type="email" id="admin-email" class="form-input" placeholder="admin@harsha.com" required autocomplete="username">
+          </div>
+          <div class="form-group" style="margin-bottom: 24px;">
+            <label class="form-label" for="admin-password">Password</label>
+            <input type="password" id="admin-password" class="form-input" placeholder="••••••••" required autocomplete="current-password">
+          </div>
+          <button type="submit" id="admin-submit-btn" class="btn btn-primary btn-full btn-lg">
+            <span class="btn-text">Authenticate Admin</span>
+          </button>
+        </form>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Simulated Interactive Google Sign-In Modal -->
+  <div id="google-login-modal" style="display: none; position: fixed; inset: 0; justify-content: center; align-items: center; z-index: 99999; background: rgba(2,2,8,0.92); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);">
+    <div style="max-width: 460px; width: 90%; padding: 36px 32px; border: 1.5px solid rgba(197,160,89,0.4); border-radius: 20px; background: radial-gradient(ellipse at 30% 20%, #0d0a20, #03030b); box-shadow: 0 0 80px rgba(197,160,89,0.2), 0 0 160px rgba(67,56,202,0.15), inset 0 0 40px rgba(197,160,89,0.05); text-align: center; position: relative; overflow: hidden; animation: popup-3d 0.6s cubic-bezier(0.175,0.885,0.32,1.275) both;">
+      
+      <!-- Animated top bar -->
+      <div style="position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,rgba(197,160,89,0.9),rgba(66,133,244,0.7),transparent);"></div>
+      <!-- Corner brackets -->
+      <div style="position:absolute;top:10px;left:10px;width:14px;height:14px;border-top:2px solid rgba(197,160,89,0.7);border-left:2px solid rgba(197,160,89,0.7);"></div>
+      <div style="position:absolute;top:10px;right:10px;width:14px;height:14px;border-top:2px solid rgba(197,160,89,0.7);border-right:2px solid rgba(197,160,89,0.7);"></div>
+      <div style="position:absolute;bottom:10px;left:10px;width:14px;height:14px;border-bottom:2px solid rgba(197,160,89,0.7);border-left:2px solid rgba(197,160,89,0.7);"></div>
+      <div style="position:absolute;bottom:10px;right:10px;width:14px;height:14px;border-bottom:2px solid rgba(197,160,89,0.7);border-right:2px solid rgba(197,160,89,0.7);"></div>
+
+      <!-- Google Branding Header -->
+      <div style="margin-bottom: 24px;">
+        <svg width="44" height="44" viewBox="0 0 24 24" style="margin-bottom: 12px; display: inline-block; filter: drop-shadow(0 0 10px rgba(66,133,244,0.5));">
+          <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+          <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+          <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l3.66-2.85z"/>
+          <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.85c.87-2.6 3.3-4.53 6.16-4.53z"/>
+        </svg>
+        <h2 style="font-family: var(--font-heading); font-size: 1.5rem; color: #fff; margin-bottom: 4px;">Sign in with Google</h2>
+        <p style="font-size: 0.82rem; color: var(--text-secondary); font-family: 'Courier New', monospace; letter-spacing: 1px;">to continue to Harsha Metal Frame Works</p>
+      </div>
+
+      <!-- Input Form -->
+      <form id="google-auth-sim-form">
+        <div class="form-group" style="text-align: left; margin-bottom: 16px;">
+          <label class="form-label" for="google-sim-name" style="color: rgba(197,160,89,0.8); font-size: 0.75rem; letter-spacing: 1px; text-transform: uppercase;">Your Full Name</label>
+          <input type="text" id="google-sim-name" class="form-input" placeholder="e.g. Preetham Kumar" required
+            style="background: rgba(255,255,255,0.04); border-color: rgba(255,255,255,0.15); margin-top: 6px; color: #fff;">
+        </div>
+        <div class="form-group" style="text-align: left; margin-bottom: 20px;">
+          <label class="form-label" for="google-sim-email" style="color: rgba(197,160,89,0.8); font-size: 0.75rem; letter-spacing: 1px; text-transform: uppercase;">Gmail Address</label>
+          <input type="email" id="google-sim-email" class="form-input" placeholder="e.g. preetham@gmail.com" required
+            style="background: rgba(255,255,255,0.04); border-color: rgba(255,255,255,0.15); margin-top: 6px; color: #fff;">
+        </div>
+
+        <!-- Avatar Selection -->
+        <div style="text-align: left; margin-bottom: 24px;">
+          <label class="form-label" style="display: block; margin-bottom: 10px; color: rgba(197,160,89,0.8); font-size: 0.75rem; letter-spacing: 1px; text-transform: uppercase;">Select Profile Avatar</label>
+          <div id="avatar-row" style="display: flex; gap: 12px; justify-content: center;">
+            <label style="cursor: pointer;">
+              <input type="radio" name="google-avatar" value="👨‍💻" checked style="display: none;">
+              <span class="av-btn" data-val="👨‍💻" style="font-size: 1.8rem; display: flex; align-items: center; justify-content: center; width: 54px; height: 54px; border-radius: 50%; border: 2px solid rgba(197,160,89,0.8); background: rgba(197,160,89,0.1); cursor: pointer; transition: all 0.2s; box-shadow: 0 0 12px rgba(197,160,89,0.3);">👨‍💻</span>
+            </label>
+            <label style="cursor: pointer;">
+              <input type="radio" name="google-avatar" value="🦊" style="display: none;">
+              <span class="av-btn" data-val="🦊" style="font-size: 1.8rem; display: flex; align-items: center; justify-content: center; width: 54px; height: 54px; border-radius: 50%; border: 2px solid rgba(255,255,255,0.1); background: rgba(255,255,255,0.04); cursor: pointer; transition: all 0.2s;">🦊</span>
+            </label>
+            <label style="cursor: pointer;">
+              <input type="radio" name="google-avatar" value="🚀" style="display: none;">
+              <span class="av-btn" data-val="🚀" style="font-size: 1.8rem; display: flex; align-items: center; justify-content: center; width: 54px; height: 54px; border-radius: 50%; border: 2px solid rgba(255,255,255,0.1); background: rgba(255,255,255,0.04); cursor: pointer; transition: all 0.2s;">🚀</span>
+            </label>
+            <label style="cursor: pointer;">
+              <input type="radio" name="google-avatar" value="👾" style="display: none;">
+              <span class="av-btn" data-val="👾" style="font-size: 1.8rem; display: flex; align-items: center; justify-content: center; width: 54px; height: 54px; border-radius: 50%; border: 2px solid rgba(255,255,255,0.1); background: rgba(255,255,255,0.04); cursor: pointer; transition: all 0.2s;">👾</span>
+            </label>
+            <label style="cursor: pointer;">
+              <input type="radio" name="google-avatar" value="🎯" style="display: none;">
+              <span class="av-btn" data-val="🎯" style="font-size: 1.8rem; display: flex; align-items: center; justify-content: center; width: 54px; height: 54px; border-radius: 50%; border: 2px solid rgba(255,255,255,0.1); background: rgba(255,255,255,0.04); cursor: pointer; transition: all 0.2s;">🎯</span>
+            </label>
+          </div>
+        </div>
+
+        <div style="display: flex; gap: 12px; margin-top: 8px;">
+          <button type="button" id="google-sim-cancel" class="btn btn-ghost" style="flex: 1;">Cancel</button>
+          <button type="submit" id="google-sim-proceed" class="btn" style="flex: 1.5; background: linear-gradient(135deg, #4285F4, #3367d6); color: #fff; box-shadow: 0 4px 20px rgba(66,133,244,0.4); border: none; font-family: var(--font-heading); font-weight: 600; border-radius: var(--radius-md);">Continue →</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    function switchLoginTab(type) {
+      const tabs = document.querySelectorAll("#auth-portal-tabs .auth-tab");
+      const userPanel = document.getElementById("user-login-panel");
+      const adminPanel = document.getElementById("admin-login-panel");
+      const errBox = document.getElementById("auth-error-box");
+
+      errBox.style.display = "none";
+
+      if (type === 'user') {
+        tabs[0].classList.add("active");
+        tabs[1].classList.remove("active");
+        userPanel.style.display = "block";
+        adminPanel.style.display = "none";
+      } else {
+        tabs[0].classList.remove("active");
+        tabs[1].classList.add("active");
+        userPanel.style.display = "none";
+        adminPanel.style.display = "block";
+      }
+    }
+  </script>
+
+</body>
+</html>

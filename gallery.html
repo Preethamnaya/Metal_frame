@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Frame Gallery | Harsha Metal Frame Works</title>
+  <link rel="stylesheet" href="css/main.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/pages.css">
+  
+  <!-- Firebase Compatibility Libraries -->
+  <script defer src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+  <script defer src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+  <script defer src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+  <script defer src="https://www.gstatic.com/firebasejs/10.8.0/firebase-storage-compat.js"></script>
+  
+  <!-- App JS -->
+  <script defer src="js/firebase-config.js"></script>
+  <script defer src="js/main.js"></script>
+  <script defer src="js/gallery.js"></script>
+</head>
+<body class="metal-bg grain-overlay">
+
+  <!-- Gallery Header -->
+  <section class="gallery-hero">
+    <div class="container">
+      <span class="section-label">Catalog Portfolio</span>
+      <h1 class="section-title">Our Premium <span>Metal Samples</span></h1>
+      <p class="section-desc">Browse through our structural, modern, and classic metal picture frame styles. Select a design to start custom sizing.</p>
+      
+      <!-- Search Input -->
+      <div class="gallery-search">
+        <input type="text" id="search-input" class="form-input" placeholder="Search frame names or materials...">
+      </div>
+    </div>
+  </section>
+
+  <!-- Main Catalog Grid -->
+  <section class="section" style="padding-top: 0;">
+    <div class="container">
+      
+      <!-- Material Filter Chips -->
+      <div class="filter-chips" id="filter-container">
+        <button class="chip active" data-material="all">All Metals</button>
+        <button class="chip" data-material="aluminum">Aluminum</button>
+        <button class="chip" data-material="steel">Steel</button>
+        <button class="chip" data-material="iron">Iron</button>
+      </div>
+
+      <!-- Loading skeleton -->
+      <div class="grid-3" id="loading-skeleton">
+        <div class="card" style="height: 350px;">
+          <div class="skeleton" style="height: 200px; width: 100%;"></div>
+          <div style="padding: 20px;">
+            <div class="skeleton" style="height: 24px; width: 70%; margin-bottom: 12px;"></div>
+            <div class="skeleton" style="height: 16px; width: 90%; margin-bottom: 24px;"></div>
+            <div class="skeleton" style="height: 32px; width: 40%;"></div>
+          </div>
+        </div>
+        <div class="card" style="height: 350px;">
+          <div class="skeleton" style="height: 200px; width: 100%;"></div>
+          <div style="padding: 20px;">
+            <div class="skeleton" style="height: 24px; width: 60%; margin-bottom: 12px;"></div>
+            <div class="skeleton" style="height: 16px; width: 85%; margin-bottom: 24px;"></div>
+            <div class="skeleton" style="height: 32px; width: 40%;"></div>
+          </div>
+        </div>
+        <div class="card" style="height: 350px;">
+          <div class="skeleton" style="height: 200px; width: 100%;"></div>
+          <div style="padding: 20px;">
+            <div class="skeleton" style="height: 24px; width: 80%; margin-bottom: 12px;"></div>
+            <div class="skeleton" style="height: 16px; width: 70%; margin-bottom: 24px;"></div>
+            <div class="skeleton" style="height: 32px; width: 40%;"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Main Dynamic Grid -->
+      <div class="products-grid" id="gallery-grid" style="display: none;">
+        <!-- Filled Dynamically -->
+      </div>
+      
+      <!-- Empty State -->
+      <div class="empty-state" id="empty-state" style="display: none;">
+        <div class="empty-icon">🖼️</div>
+        <h3>No Frame Samples Found</h3>
+        <p>Try refining your search keyword or selected metal filter.</p>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Detailed Modal -->
+  <div class="modal-overlay" id="product-modal">
+    <div class="modal">
+      <div class="flex-between" style="margin-bottom: 20px;">
+        <h3 id="modal-title">Frame Title</h3>
+        <button id="modal-close" class="btn btn-ghost btn-icon" style="border-radius: 50%; width: 32px; height: 32px;">×</button>
+      </div>
+      <img id="modal-image" src="" alt="" style="width: 100%; aspect-ratio: 16/10; object-fit: cover; border-radius: var(--radius-md); margin-bottom: 20px; border: 1px solid var(--border);">
+      
+      <div class="flex gap-sm" id="modal-tags" style="margin-bottom: 16px;">
+        <!-- Filled dynamic -->
+      </div>
+
+      <p id="modal-desc" style="margin-bottom: 24px;">Detailed product description goes here.</p>
+      
+      <div class="flex-between" style="padding-top: 16px; border-top: 1px solid var(--border);">
+        <div>
+          <span style="font-size: 0.8rem; color: var(--text-muted); display: block;">ESTIMATED PRICE RANGE</span>
+          <span id="modal-price" style="font-family: var(--font-heading); font-size: 1.4rem; font-weight: 800; color: var(--gold);">₹0</span>
+        </div>
+        <a id="modal-order-btn" href="#" class="btn btn-primary">Custom Order this Design</a>
+      </div>
+    </div>
+  </div>
+
+</body>
+</html>

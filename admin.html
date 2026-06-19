@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Dashboard | Harsha Metal Frame Works</title>
+  <link rel="stylesheet" href="css/main.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/pages.css">
+  
+  <!-- App JS -->
+  <script defer src="js/db-api.js"></script>
+  <script defer src="js/main.js"></script>
+  <script defer src="js/admin.js"></script>
+</head>
+<body class="metal-bg grain-overlay">
+
+  <!-- Admin Panel Guard Screen (Shown if not admin) -->
+  <div id="admin-guard-overlay" style="display: none; min-height: 100vh;" class="flex-center">
+    <div class="card" style="padding: 40px; text-align: center; max-width: 480px; border-color: var(--danger);">
+      <span style="font-size: 3rem;">⚠️</span>
+      <h2 style="margin: 16px 0 8px; color: var(--danger);">Access Denied</h2>
+      <p style="margin-bottom: 24px; color: var(--text-secondary);">You do not have administrative privileges to access this control dashboard.</p>
+      <a href="auth.html" class="btn btn-primary btn-full">Login as Admin</a>
+    </div>
+  </div>
+
+  <!-- Main Dashboard Layout -->
+  <div class="admin-page" id="admin-main-dashboard">
+    
+    <!-- Sidebar Navigation -->
+    <aside class="admin-sidebar">
+      <div class="admin-sidebar-title">Management</div>
+      <button class="admin-nav-link active" data-target="section-overview">📈 Overview</button>
+      <button class="admin-nav-link" data-target="section-orders">📦 Orders Queue</button>
+      <button class="admin-nav-link" data-target="section-catalog">🖼️ Frame Gallery Editor</button>
+      
+      <div class="admin-sidebar-title">Control</div>
+      <a href="index.html" class="admin-nav-link">🏠 Go To Website</a>
+      <button onclick="logoutSession()" class="admin-nav-link" style="color: var(--danger);">🚪 Sign Out</button>
+    </aside>
+
+    <!-- Main Content Container -->
+    <main class="admin-content">
+      
+      <!-- HEADER -->
+      <div class="flex-between" style="margin-bottom: 40px; border-bottom: 1px solid var(--border); padding-bottom: 20px; flex-wrap: wrap; gap: 16px;">
+        <div>
+          <span style="font-size: 0.8rem; color: var(--text-muted); font-weight: 600; text-transform: uppercase; letter-spacing: 2px;">Administrator Control</span>
+          <h1 style="font-size: 2rem; margin-top: 4px;">Management Dashboard</h1>
+        </div>
+        <div id="admin-user-tag" style="background: rgba(212,168,67,0.15); padding: 8px 16px; border-radius: 50px; font-size: 0.85rem; font-family: var(--font-heading); color: var(--gold); border: 1px solid var(--border);">
+          Admin: Loading Name...
+        </div>
+      </div>
+
+      <!-- SECTION 1: OVERVIEW -->
+      <section id="section-overview" class="admin-section active">
+        <!-- Stat Cards Grid -->
+        <div class="grid-4" style="margin-bottom: 40px;">
+          <div class="stat-card">
+            <div class="stat-icon gold">📦</div>
+            <div>
+              <div class="stat-value" id="stat-total-orders">0</div>
+              <div class="stat-label">Total Orders</div>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon blue">⌛</div>
+            <div>
+              <div class="stat-value" id="stat-pending-orders">0</div>
+              <div class="stat-label">Pending Orders</div>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon green">💰</div>
+            <div>
+              <div class="stat-value" id="stat-estimated-revenue">₹0</div>
+              <div class="stat-label">Est. Revenue</div>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon purple">🖼️</div>
+            <div>
+              <div class="stat-value" id="stat-catalog-items">0</div>
+              <div class="stat-label">Catalog Products</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="grid-2">
+          <!-- Quick Status distribution list -->
+          <div class="card" style="padding: 24px;">
+            <h3 style="margin-bottom: 20px; font-family: var(--font-heading); font-size: 1.2rem;">Activity Logs</h3>
+            <ul class="footer-links" id="admin-activity-logs">
+              <li style="color:var(--text-secondary); font-size:0.9rem; margin-bottom:8px;">✅ System initialized. Waiting for customer entries...</li>
+            </ul>
+          </div>
+          
+          <!-- Quick notes for admin -->
+          <div class="card" style="padding: 24px;">
+            <h3 style="margin-bottom: 12px; font-family: var(--font-heading); font-size: 1.2rem;">Quick Instructions</h3>
+            <p style="font-size:0.875rem; margin-bottom:12px;">Welcome to the HARSHA METAL_FRAM_WORKS administration dashboard panel.</p>
+            <ul style="font-size: 0.85rem; padding-left: 20px; list-style: disc; color: var(--text-secondary);">
+              <li style="margin-bottom:6px;">Update processing status using the dropdown elements in the <strong>Orders Queue</strong>.</li>
+              <li style="margin-bottom:6px;">View detailed customer specifications and download custom upload reference photos.</li>
+              <li style="margin-bottom:6px;">Create new design choices in the <strong>Frame Gallery Editor</strong> to show samples.</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <!-- SECTION 2: ORDERS QUEUE -->
+      <section id="section-orders" class="admin-section">
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr>
+                <th>Customer</th>
+                <th>Design / Dimensions</th>
+                <th>Estimated Price</th>
+                <th>Order Status</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody id="admin-orders-table-body">
+              <!-- Loaded Dynamically -->
+            </tbody>
+          </table>
+        </div>
+        <div class="empty-state" id="admin-orders-empty" style="display: none;">
+          <div class="empty-icon">📁</div>
+          <h3>No Orders in Queue</h3>
+          <p>Once clients place orders, details will propagate in this queue.</p>
+        </div>
+      </section>
+
+      <!-- SECTION 3: FRAME GALLERY EDITOR -->
+      <section id="section-catalog" class="admin-section">
+        <div class="grid-2">
+          
+          <!-- Form to add products -->
+          <div class="card" style="padding: 28px;">
+            <h3 style="margin-bottom: 20px; font-family: var(--font-heading); font-size: 1.2rem;">Create Sample Frame Design</h3>
+            
+            <form id="admin-add-product-form">
+              <div class="form-group">
+                <label for="prod-name" class="form-label">Frame Design Name <span>*</span></label>
+                <input type="text" id="prod-name" class="form-input" placeholder="e.g. Brushed Silver Border" required>
+              </div>
+
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="prod-material" class="form-label">Material Type <span>*</span></label>
+                  <select id="prod-material" class="form-select" required>
+                    <option value="Metal">Metal (Metallic Finish)</option>
+                    <option value="Gold">Gold (Glowing Finish)</option>
+                    <option value="Black Iron">Black Iron (Matte)</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label for="prod-style" class="form-label">Style Style <span>*</span></label>
+                  <select id="prod-style" class="form-select" required>
+                    <option value="Modern">Modern</option>
+                    <option value="Classic">Classic</option>
+                    <option value="Rustic">Rustic</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="prod-price" class="form-label">Base Price per Square Inch (₹) <span>*</span></label>
+                <input type="number" step="0.01" id="prod-price" class="form-input" placeholder="e.g. 2.85" required>
+              </div>
+
+              <div class="form-group">
+                <label for="prod-desc" class="form-label">Description <span>*</span></label>
+                <textarea id="prod-desc" class="form-textarea" placeholder="Detailed details of colors, edges, molding sizes, backboards, etc." required></textarea>
+              </div>
+
+              <!-- Product photo file upload -->
+              <div class="form-group">
+                <label class="form-label">Product Sample Photo <span>*</span></label>
+                <div class="file-drop" id="prod-file-drop" style="padding: 24px 10px;">
+                  <span class="file-drop-icon" style="font-size: 1.8rem; margin-bottom: 6px;">📤</span>
+                  <div class="file-drop-title" style="font-size: 0.85rem;">Click to upload product image</div>
+                  <input type="file" id="prod-file-input" accept="image/*" required>
+                </div>
+                <div class="file-preview" id="prod-file-preview" style="display: none;"></div>
+              </div>
+
+              <button type="submit" id="prod-submit-btn" class="btn btn-primary btn-full" style="margin-top: 12px;">Add Design to Catalog</button>
+            </form>
+          </div>
+
+          <!-- Current catalog listing -->
+          <div>
+            <h3 style="margin-bottom: 20px; font-family: var(--font-heading); font-size: 1.2rem;">Available Catalog Designs</h3>
+            <div id="admin-catalog-list" style="display: flex; flex-direction: column; gap: 12px;">
+              <!-- Loaded dynamically -->
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <!-- Detail Dialog Modal (View Customer Uploaded Artwork Detail) -->
+  <div class="modal-overlay" id="admin-order-modal">
+    <div class="modal" style="max-width: 620px;">
+      <div class="flex-between" style="margin-bottom: 20px; border-bottom: 1px solid var(--border); padding-bottom: 12px;">
+        <h3 id="admin-modal-title">Order Specs</h3>
+        <button id="admin-modal-close" class="btn btn-ghost btn-icon" style="border-radius: 50%; width: 32px; height: 32px;">×</button>
+      </div>
+
+      <!-- Status Row -->
+      <div style="margin-bottom: 16px; padding: 12px 16px; background: rgba(255,255,255,0.03); border-radius: 8px; border: 1px solid var(--border);">
+        <span style="font-size: 0.75rem; color: var(--text-muted); display: block; margin-bottom: 4px; text-transform: uppercase; letter-spacing: 1px;">ORDER STATUS</span>
+        <div id="admin-modal-status">—</div>
+      </div>
+
+      <div class="table-wrapper" style="margin-bottom: 20px;">
+        <table style="font-size: 0.85rem;">
+          <tbody>
+            <tr><td><strong>Customer Name</strong></td><td id="admin-modal-cname">—</td></tr>
+            <tr><td><strong>Email Address</strong></td><td id="admin-modal-cemail">—</td></tr>
+            <tr><td><strong>Phone (WhatsApp)</strong></td><td id="admin-modal-cphone">—</td></tr>
+            <tr><td><strong>Address</strong></td><td id="admin-modal-caddress">—</td></tr>
+            <tr><td><strong>Dimensions</strong></td><td id="admin-modal-csize">—</td></tr>
+            <tr><td><strong>Specifications</strong></td><td id="admin-modal-cmaterial">—</td></tr>
+            <tr><td><strong>Instructions</strong></td><td id="admin-modal-cnotes">None</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div id="admin-modal-photo-container" style="margin-bottom: 24px; display: none;">
+        <span style="font-size: 0.8rem; color: var(--text-muted); display: block; margin-bottom: 8px;">CUSTOMER UPLOADED REFERENCE</span>
+        <img id="admin-modal-photo" src="" alt="Customer artwork" style="width: 100%; border-radius: var(--radius-md); border: 1px solid var(--border); object-fit: contain; max-height: 250px;">
+      </div>
+
+      <div class="flex-center">
+        <a id="admin-modal-whatsapp-link" href="#" target="_blank" class="btn btn-outline btn-full"
+          style="background: rgba(37,211,102,0.1); border-color: #25d366; color: #25d366;">
+          💬 Message Client on WhatsApp
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== CANCEL REASON MODAL ===== -->
+  <div id="cancel-reason-modal" style="display:none; position:fixed; inset:0; z-index:99999; background:rgba(2,2,8,0.92); backdrop-filter:blur(20px); justify-content:center; align-items:center;">
+    <div style="max-width:460px; width:90%; background:radial-gradient(ellipse at 30% 20%,#1a0a0a,#0a0308); border:1.5px solid rgba(239,68,68,0.5); border-radius:20px; padding:36px 32px; position:relative; overflow:hidden; box-shadow:0 0 80px rgba(239,68,68,0.2), 0 0 160px rgba(239,68,68,0.08);">
+
+      <!-- Top bar -->
+      <div style="position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,rgba(239,68,68,0.8),transparent);"></div>
+      <!-- Corner brackets -->
+      <div style="position:absolute;top:10px;left:10px;width:14px;height:14px;border-top:2px solid rgba(239,68,68,0.7);border-left:2px solid rgba(239,68,68,0.7);"></div>
+      <div style="position:absolute;top:10px;right:10px;width:14px;height:14px;border-top:2px solid rgba(239,68,68,0.7);border-right:2px solid rgba(239,68,68,0.7);"></div>
+      <div style="position:absolute;bottom:10px;left:10px;width:14px;height:14px;border-bottom:2px solid rgba(239,68,68,0.7);border-left:2px solid rgba(239,68,68,0.7);"></div>
+      <div style="position:absolute;bottom:10px;right:10px;width:14px;height:14px;border-bottom:2px solid rgba(239,68,68,0.7);border-right:2px solid rgba(239,68,68,0.7);"></div>
+
+      <div style="text-align:center; margin-bottom:24px;">
+        <div style="font-size:2.5rem; margin-bottom:12px;">⚠️</div>
+        <h2 style="font-family:var(--font-heading); font-size:1.4rem; color:#ef4444; margin-bottom:6px;">Cancel Order</h2>
+        <p style="font-size:0.85rem; color:var(--text-secondary);">Select a reason for cancelling <strong id="cancel-reason-customer" style="color:#fff;">customer</strong>'s order</p>
+      </div>
+
+      <div class="form-group" style="margin-bottom:16px;">
+        <label class="form-label" style="color:rgba(239,68,68,0.8); font-size:0.75rem; letter-spacing:1px; text-transform:uppercase;">Cancellation Reason</label>
+        <select id="cancel-reason-select" class="form-select" style="margin-top:8px; background:rgba(239,68,68,0.06); border-color:rgba(239,68,68,0.3); color:#fff;">
+          <option value="Payment Failed">💳 Payment Failed</option>
+          <option value="Duplicate Order">📋 Duplicate Order</option>
+          <option value="Out of Stock / Material Unavailable">🚫 Out of Stock / Material Unavailable</option>
+          <option value="Too Many Orders — Capacity Full">📦 Too Many Orders — Capacity Full</option>
+          <option value="Customer Request">👤 Customer Request</option>
+          <option value="Incorrect Order Details">✏️ Incorrect Order Details</option>
+          <option value="Other">📝 Other</option>
+        </select>
+      </div>
+
+      <div id="cancel-reason-other-box" style="display:none; margin-bottom:16px;">
+        <label class="form-label" style="color:rgba(239,68,68,0.8); font-size:0.75rem; letter-spacing:1px; text-transform:uppercase;">Specify Reason</label>
+        <input type="text" id="cancel-reason-other" class="form-input" placeholder="Enter specific reason..."
+          style="margin-top:8px; background:rgba(255,255,255,0.04); border-color:rgba(239,68,68,0.3); color:#fff;">
+      </div>
+
+      <div style="display:flex; gap:12px; margin-top:8px;">
+        <button id="cancel-reason-dismiss" class="btn btn-ghost" style="flex:1;">← Go Back</button>
+        <button id="cancel-reason-confirm" class="btn" style="flex:1.5; background:linear-gradient(135deg,#dc2626,#b91c1c); color:#fff; border:none; font-family:var(--font-heading); font-weight:600; border-radius:var(--radius-md); box-shadow:0 4px 20px rgba(239,68,68,0.4);">❌ Confirm Cancel</button>
+      </div>
+    </div>
+  </div>
+
+</body>
+</html>

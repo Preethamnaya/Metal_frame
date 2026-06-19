@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Place Order | Harsha Metal Frame Works</title>
+  <link rel="stylesheet" href="css/main.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/pages.css">
+  
+  <!-- Firebase Compatibility Libraries -->
+  <script defer src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+  <script defer src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+  <script defer src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+  <script defer src="https://www.gstatic.com/firebasejs/10.8.0/firebase-storage-compat.js"></script>
+  
+  <!-- App JS -->
+  <script defer src="js/firebase-config.js"></script>
+  <script defer src="js/main.js"></script>
+  <script defer src="js/order.js"></script>
+</head>
+<body class="metal-bg grain-overlay">
+
+  <section class="order-page">
+    <div class="container">
+      
+      <div class="section-header" style="margin-bottom: 40px; text-align: left;">
+        <span class="section-label">Tailored Framing</span>
+        <h1 class="section-title">Order Your <span>Custom Frame</span></h1>
+        <p>Design your metal frame by filling out dimensions or uploading your photo.</p>
+      </div>
+
+      <!-- Route Guard Warning Overlay (Hidden by default, shown if logged out) -->
+      <div id="auth-warning-overlay" style="display: none;">
+        <div class="card" style="padding: 40px; text-align: center; max-width: 500px; margin: 40px auto; border-color: var(--gold);">
+          <span style="font-size: 3rem;">🔐</span>
+          <h2 style="margin: 16px 0 8px;">Login Required</h2>
+          <p style="margin-bottom: 24px; color: var(--text-secondary);">You need to sign in to place a custom frame order and track delivery status.</p>
+          <a href="auth.html?redirect=order.html" class="btn btn-primary btn-full">Login / Register Now</a>
+        </div>
+      </div>
+
+      <!-- Main Order Form (Hidden if logged out) -->
+      <div class="order-layout" id="order-main-layout">
+        
+        <form class="order-card" id="order-form">
+          <h2 style="margin-bottom: 24px; font-family: var(--font-heading); font-size: 1.5rem; display: flex; align-items: center; gap: 8px;">
+            <span>🛠️</span> Frame Configurations
+          </h2>
+          
+          <!-- Reference Product Option Selection -->
+          <div class="form-group">
+            <label class="form-label">Reference Design Style</label>
+            <div class="frame-selector" id="frame-selector-options">
+              <!-- Filled with standard designs + option for entirely custom photo -->
+              <div class="frame-option selected" data-product-name="Custom Reference Upload">
+                <div style="font-size: 1.8rem; margin: 10px 0;">📷</div>
+                <div class="frame-option-name">Custom (My Photo)</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Upload Frame reference photo -->
+          <div class="form-group">
+            <label class="form-label">Upload Picture / Artwork Reference <span>*</span></label>
+            <div class="file-drop" id="file-drop-zone">
+              <span class="file-drop-icon">📤</span>
+              <div class="file-drop-title">Drag and drop your photo, or click to browse</div>
+              <div class="file-drop-hint">Supports JPEG, PNG, WEBP (Max 5MB)</div>
+              <input type="file" id="file-input" accept="image/*" required>
+            </div>
+            <div class="file-preview" id="file-preview-container" style="display: none;">
+              <!-- Javascript preview inserted here -->
+            </div>
+          </div>
+
+          <!-- Material Choice -->
+          <div class="form-row">
+            <div class="form-group">
+              <label for="frame-material" class="form-label">Metal Material <span>*</span></label>
+              <select id="frame-material" class="form-select" required>
+                <option value="Aluminum" selected>Aluminum (Light & Modern)</option>
+                <option value="Steel">Steel (Industrial & Brushed)</option>
+                <option value="Iron">Iron (Heavy & Classical)</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="frame-finish" class="form-label">Finish / Color <span>*</span></label>
+              <select id="frame-finish" class="form-select" required>
+                <option value="Matte Black" selected>Matte Black Coating</option>
+                <option value="Anodized Gold">Anodized Gold</option>
+                <option value="Polished Silver">Polished Silver</option>
+                <option value="Brushed Bronze">Brushed Bronze</option>
+                <option value="Raw Brushed Metal">Raw Brushed Metal</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Dimensions Config -->
+          <div class="form-row">
+            <div class="form-group">
+              <label for="frame-width" class="form-label">Width (Inches) <span>*</span></label>
+              <input type="number" id="frame-width" class="form-input" min="4" max="120" value="12" required>
+              <span class="form-hint">Min: 4", Max: 120"</span>
+            </div>
+
+            <div class="form-group">
+              <label for="frame-height" class="form-label">Height (Inches) <span>*</span></label>
+              <input type="number" id="frame-height" class="form-input" min="4" max="120" value="16" required>
+              <span class="form-hint">Min: 4", Max: 120"</span>
+            </div>
+          </div>
+
+          <!-- Quantity -->
+          <div class="form-row" style="grid-template-columns: 1fr 2fr;">
+            <div class="form-group">
+              <label for="frame-qty" class="form-label">Quantity <span>*</span></label>
+              <input type="number" id="frame-qty" class="form-input" min="1" max="100" value="1" required>
+            </div>
+            
+            <div class="form-group">
+              <label for="customer-phone" class="form-label">Contact Mobile Number <span>*</span></label>
+              <input type="tel" id="customer-phone" class="form-input" placeholder="e.g. 9876543210" required>
+            </div>
+          </div>
+
+          <!-- Delivery Destination Info -->
+          <div class="form-group">
+            <label for="shipping-address" class="form-label">Complete Shipping Address <span>*</span></label>
+            <textarea id="shipping-address" class="form-textarea" placeholder="Enter building name, street address, area code, city & state details..." required></textarea>
+          </div>
+
+          <div class="form-group">
+            <label for="special-instructions" class="form-label">Special Fabrication Instructions (Optional)</label>
+            <textarea id="special-instructions" class="form-textarea" placeholder="Any specific requirements? Frame border thickness, backing board type, hanger mount layout..."></textarea>
+          </div>
+
+        </form>
+
+        <!-- Dynamic Invoice Side Panel -->
+        <div class="order-summary-card">
+          <h2 class="order-summary-title">Order Quotation Summary</h2>
+          
+          <div class="summary-row">
+            <span class="label">Reference Design</span>
+            <span class="value" id="summary-design">Custom Photo Reference</span>
+          </div>
+
+          <div class="summary-row">
+            <span class="label">Frame Size</span>
+            <span class="value" id="summary-size">12" × 16"</span>
+          </div>
+
+          <div class="summary-row">
+            <span class="label">Material</span>
+            <span class="value" id="summary-material">Aluminum</span>
+          </div>
+
+          <div class="summary-row">
+            <span class="label">Finish Coated</span>
+            <span class="value" id="summary-finish">Matte Black</span>
+          </div>
+
+          <div class="summary-row">
+            <span class="label">Unit Price</span>
+            <span class="value" id="summary-unit-price">₹1,150.00</span>
+          </div>
+
+          <div class="summary-row">
+            <span class="label">Quantity Count</span>
+            <span class="value" id="summary-quantity">1</span>
+          </div>
+
+          <hr class="summary-divider">
+
+          <div class="summary-total">
+            <span>Estimated Total:</span>
+            <span class="value" id="summary-total-price">₹1,150.00</span>
+          </div>
+          <p style="font-size:0.75rem; color:var(--text-muted); margin-top: 6px;">* Includes basic delivery box and mounting pins. Actual price subject to confirmation by admin.</p>
+          
+          <button type="submit" form="order-form" id="submit-order-btn" class="btn btn-primary btn-full btn-lg" style="margin-top: 24px;">
+            <span class="btn-text">Submit Custom Order</span>
+          </button>
+        </div>
+
+      </div>
+
+    </div>
+  </section>
+
+</body>
+</html>
