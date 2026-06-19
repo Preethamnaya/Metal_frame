@@ -197,14 +197,18 @@ app.post('/api/contacts', async (req, res) => {
 });
 
 // ================= STATIC CLIENT PAGE SERVING =================
-app.use(express.static(path.join(__dirname)));
+app.use(express.static(path.join(__dirname, '..')));
 
 // Fallback index.html router
 app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, 'index.html'));
+  res.sendFile(path.join(__dirname, '..', 'index.html'));
 });
 
-// Start Express Server
-app.listen(PORT, () => {
-  console.log(`Server is running at http://localhost:${PORT}`);
-});
+// Start Express Server (only when run directly or not on Vercel)
+if (process.env.NODE_ENV !== 'production' && require.main === module) {
+  app.listen(PORT, () => {
+    console.log(`Server is running at http://localhost:${PORT}`);
+  });
+}
+
+module.exports = app;

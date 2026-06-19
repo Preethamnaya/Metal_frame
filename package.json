@@ -2,10 +2,10 @@
   "name": "harsha-metal-frame-works",
   "version": "1.0.0",
   "description": "Full-Stack Node.js and MongoDB website for customized 3D metal frames",
-  "main": "server.js",
+  "main": "api/index.js",
   "scripts": {
-    "start": "node server.js",
-    "dev": "node --watch server.js"
+    "start": "node api/index.js",
+    "dev": "node --watch api/index.js"
   },
   "dependencies": {
     "cors": "^2.8.5",
